@@ -26,17 +26,23 @@ def EnviarCorreo():
     #Creando el mensaje que se quiere mandar
     Mensaje = "Alguien abrio la puerta el "+ Fecha + " a la hora " + Hora
 
+    Registro = "ALGUIEN ABRIO LA PUERTA EL "+ Fecha + " A LA HORA " + Hora + " CUIDADO !!!"
+
+    #Agregar al registro
+
+    lista1.insert(END,(Registro))
+
     #Aspectos de mensaje
     em = EmailMessage()
     em["From"] = Emisor
     em["To"] = Receptor
     em["Subject"] = Asunto
     em.set_content(Mensaje)
-
     #Preparando el envio
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(Emisor, Contrasena)
         smtp.sendmail(Emisor, Receptor, em.as_string())
+
 
 cont = 0
 
@@ -65,7 +71,6 @@ def apagar():
     Arduino.write('b'.encode())
     time.sleep(0.1)
 
-
 def cerrarInterfaz():
     Arduino.close()
     control.destroy()
@@ -75,30 +80,38 @@ threading.Thread(target=llamar_sistema).start()
 
 control = Tk()
 
-control.geometry("500x200")
+control.geometry("700x500")
 control.title('control de sistema')
 
+titulo1 = Frame()
+titulo1.config(bg = "gray", width = "700", height = "80")
+titulo1.place(x = 0, y = 0)
 
-boton_1 = Label(control,  bg = 'green')
-boton_1.place(x=20,y=50)
+lbltitulo = Label(titulo1, text = "SISTEMA DE SEGURIDAD",bg = "gray", fg = "black",font =("Arial Rounded MT Bold", 25))
+lbltitulo.place(x = 155, y = 20)
 
-boton_2 = Label(control, bg = 'red')
-boton_2.place(x=250,y=50)
+botones = Frame()
+botones.config(bg = "black", width = "700", height = "120")
+botones.place(x = 0, y = 80)
 
-boton_3 = Label(control, bg = 'red')
-boton_3.place(x=400,y=150)
+registro = Frame()
+registro.config(bg = "blue", width = "700", height = "300")
+registro.place(x=0, y= 200)
+
+lista1 = Listbox(registro, bg = "white", width = "80", height = "15")
+lista1.place(x = 115, y = 10)
+
 
 #boton de encender
-encender_c = Button(boton_1, text = "ACTIVAR", bg = "white", fg = "black", font = ("ARIAL", 20), command = lambda:encender())
-encender_c.pack()
+encender_c = Button(botones, text = "ACTIVAR", bg = "green", fg = "black", font = ("ARIAL", 20), command = lambda:encender())
+encender_c.place(x = 100, y = 20)
 
 #boton de apagar
-apagar_c = Button(boton_2, text = "APAGAR", bg = "white", fg = "black", font = ("ARIAL", 20), command = lambda:apagar())
-apagar_c.pack()
+apagar_c = Button(botones, text = "APAGAR", bg = "red", fg = "black", font = ("ARIAL", 20), command = lambda: apagar())
+apagar_c.place(x = 490, y = 20)
 
 #boton de cerrar
-cerrar_c = Button(boton_3, text = "CERRAR", bg = "white", fg = "black", font = ("ARIAL", 10), command = lambda:cerrarInterfaz())
-cerrar_c.pack()
-
+cerrar_c = Button(registro, text = "CERRAR", bg = "black", fg = "white", font = ("ARIAL", 10), command = lambda: cerrarInterfaz())
+cerrar_c.place(x = 620, y = 270)
 
 control.mainloop()
